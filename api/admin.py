@@ -3,7 +3,7 @@ from .models import Author, Genre, Book
 
 @admin.register(Author)
 class AuthorAdmin(admin.ModelAdmin):
-    list_display = ['first_name', 'last_name', 'date_of_birth', 'date_of_death', 'age']
+    list_display = ['id', 'first_name', 'last_name', 'date_of_birth', 'date_of_death', 'age']
     list_filter = ['date_of_birth', 'date_of_death']
     search_fields = ['first_name', 'last_name']
     ordering = ['date_of_birth']
