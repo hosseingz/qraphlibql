@@ -20,7 +20,18 @@ urlpatterns = [
     path('authors/delete/<int:id>/', views.AuthorDestroyAPIView.as_view(), name='author-delete'),
 
     path('authors/', views.AuthorsListAPIView.as_view(), name='authors-list'),
-    path('authors/<int:id>/', views.AuthorDetailByIdAPIView.as_view(), name='author-detail-id'),
+    path('authors/<int:id>/', views.AuthorDetailByIdAPIView.as_view(), name='author-detail'),
+    
+    
+    path('genres/create/', views.GenreCreateAPIView.as_view(), name='genre-create'),
+    path('genres/update/<int:id>/', views.GenreUpdateAPIView.as_view(), name='genre-update'),
+    path('genres/delete/<int:id>/', views.GenreDestroyAPIView.as_view(), name='genre-delete'),
+
+    path('genres/', views.GenresListAPIView.as_view(), name='genres-list'),
+    path('genres/<int:id>/', views.GenreDetailByIdAPIView.as_view(), name='genre-detail'),
+
+
+
 
 ]
 

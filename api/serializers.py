@@ -78,6 +78,17 @@ class GenreSerializer(serializers.ModelSerializer):
         model = Genre
         fields = ['name']
 
+    def validate_name(self, value):
+        if not value:
+            raise ValidationError("name cannot be empty.")
+        return value
+
+
+    def create(self, validated_data):
+        genre, _ = Genre.objects.get_or_create(**validated_data)
+        return genre
+
+
 
 class BookSerializer(serializers.ModelSerializer):
     author = AuthorSerializer(many=True)
