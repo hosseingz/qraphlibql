@@ -76,7 +76,7 @@ class AuthorSerializer(serializers.ModelSerializer):
 class GenreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Genre
-        fields = ['name']
+        fields = ['id', 'name']
 
     def validate_name(self, value):
         if not value:
@@ -91,24 +91,11 @@ class GenreSerializer(serializers.ModelSerializer):
 
 
 class BookSerializer(serializers.ModelSerializer):
-    author = AuthorSerializer(many=True)
+    author = AuthorSerializer()
     genre = GenreSerializer(many=True)
     
     class Meta:
         model = Book
-        fields = ['title', 'author', 'summary', 'genre', 'published_date', 'page_count', 'cover_image']
+        fields = ['id', 'title', 'author', 'summary', 'genre', 'published_date', 'page_count', 'cover_image']
     
-    
-    def create(self, validated_data):
-        author_data = validated_data.pop('author')
-        genre_data = validated_data.pop('genre')
-        
-        author, _ = Author.objects.get_or_create(**author_data)
-        genre, _ = Genre.objects.get_or_create(**genre_data)
-    
-        book = Book(**validated_data)
-        book.author, book.genre = author, genre
-        book.save()
-    
-        return book
-
+   
