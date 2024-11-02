@@ -107,20 +107,8 @@ class BookSerializer(serializers.ModelSerializer):
         genre, _ = Genre.objects.get_or_create(**genre_data)
     
         book = Book(**validated_data)
-        book.author = author
-        book.genre = genre
+        book.author, book.genre = author, genre
         book.save()
     
         return book
-    
- 
-    def update(self, instance, validated_data):
-
-        instance.title = validated_data.get('title', instance.title)
-        instance.summary = validated_data.get('summary', instance.summary)
-        instance.published_date = validated_data.get('published_date', instance.published_date)
-        instance.page_count = validated_data.get('page_count', instance.page_count)
-        instance.cover_image = validated_data.get('cover_image', instance.cover_image)
- 
-        return instance
 

@@ -107,3 +107,40 @@ class GenreDetailByIdAPIView(generics.RetrieveAPIView):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
     lookup_field = 'id'
+    
+    
+class BookCreateAPIView(generics.CreateAPIView):
+    authentication_classes = [BasicAuthentication]
+    permission_classes = [AllowAny]
+    queryset = Book.objects.all() 
+    serializer_class = BookSerializer
+    
+    
+class BookUpdateAPIView(generics.UpdateAPIView):
+    authentication_classes = [BasicAuthentication]
+    permission_classes = [AllowAny]
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    lookup_field = 'id'
+   
+    
+class BookDestroyAPIView(generics.DestroyAPIView):
+    authentication_classes = [BasicAuthentication]
+    permission_classes = [AllowAny]
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    lookup_field = 'id'
+    
+class BooksListAPIView(generics.ListAPIView):
+    authentication_classes = [BasicAuthentication]
+    permission_classes = [AllowAny]
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    
+    
+class BookDetailByIdAPIView(generics.RetrieveAPIView):
+    authentication_classes = [BasicAuthentication]
+    permission_classes = [AllowAny]
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    lookup_field = 'id'
