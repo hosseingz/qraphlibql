@@ -1,5 +1,3 @@
-
-
 from dotenv import load_dotenv
 from pathlib import Path
 import os
@@ -31,8 +29,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
             
-    'rest_framework',
     'graphene_django',
+    'rest_framework',
 
     'api.apps.ApiConfig'
 ]
@@ -138,6 +136,8 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 100
 }
 
+graphiql = True
+
 GRAPHENE = {
-    "SCHEMA": "django_root.schema.schema"
+    "SCHEMA": "api.schema.schema"
 }
