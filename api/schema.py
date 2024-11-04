@@ -26,6 +26,7 @@ class CreateAuthorMutation(graphene.Mutation):
         date_of_death = graphene.Date(required=False)
     
     author = graphene.Field(AuthorType)
+    message = graphene.String(required=False)
     
     def mutate(self, info, first_name, last_name, date_of_birth=None, date_of_death=None):
         author = Author.objects.create(
@@ -35,7 +36,7 @@ class CreateAuthorMutation(graphene.Mutation):
             date_of_death=date_of_death
         )
 
-        return CreateAuthorMutation(author=author)
+        return CreateAuthorMutation(author=author, message='Author successfully created.')
 
 
 class DeleteAuthorMutation(graphene.Mutation):
@@ -45,36 +46,45 @@ class DeleteAuthorMutation(graphene.Mutation):
     message = graphene.String()
     
     def mutate(self, info, id):
-        author = Author.objects.get(pk=id)
-        author.delete()
-        
-        return DeleteAuthorMutation(message=f"Author by id={id} deleted!.")
+        try:
+            author = Author.objects.get(pk=id)
+            author.delete()
+            return DeleteGenreMutation(message=f"Successfully deleted author with ID: {id}.")
+        except Author.DoesNotExist:
+            return DeleteGenreMutation(message=f"Error: Author with ID {id} does not exist.")
 
 
 class UpdateAuthorMutation(graphene.Mutation):
     class Arguments:
         id = graphene.ID(required=True)
-        first_name = graphene.String()
-        last_name = graphene.String()
+        first_name = graphene.String(required=False)
+        last_name = graphene.String(required=False)
         date_of_birth = graphene.Date(required=False)
         date_of_death = graphene.Date(required=False)
 
     author = graphene.Field(AuthorType)
+    message = graphene.String(required=False)
 
-    def mutate(self, info, id, first_name, last_name, date_of_birth=None, date_of_death=None):
-        author = Author.objects.get(pk=id)
+    def mutate(self, info, id, first_name=None, last_name=None, date_of_birth=None, date_of_death=None):
+        try:
+            author = Author.objects.get(pk=id)
 
-        author.first_name = first_name
-        author.last_name = last_name
+            if first_name:
+                author.first_name = first_name
+            if last_name:
+                author.last_name = last_name
+            if date_of_birth:
+                author.date_of_birth = date_of_birth
+            if date_of_death:
+                author.date_of_death = date_of_death
+
+            author.save()
         
-        if date_of_birth:
-            author.date_of_birth = date_of_birth
-        if date_of_death:
-            author.date_of_death = date_of_death
-
-        author.save()
+            return UpdateAuthorMutation(author=author, message=f"Successfully updated author with ID: {id}.")
+        except Author.DoesNotExist:
+            return UpdateAuthorMutation(message=f"Error: Author with ID {id} does not exist.")
         
-        return UpdateAuthorMutation(author=author)
+        
 
 
 # Genre CRUD
@@ -84,11 +94,12 @@ class CreateGenreMutation(graphene.Mutation):
         name = graphene.String()
     
     genre = graphene.Field(GenreType)
+    message = graphene.String(required=False)
     
     def mutate(self, info, name):
         genre = Genre.objects.create(name=name)
         
-        return CreateGenreMutation(genre=genre)
+        return CreateGenreMutation(genre=genre, message='Genre successfully created.')
 
 
 class DeleteGenreMutation(graphene.Mutation):
@@ -112,14 +123,17 @@ class UpdateGenreMutatuin(graphene.Mutation):
         name = graphene.String(required=True)
 
     genre = graphene.Field(GenreType)
+    message = graphene.String(required=False)
     
     def mutate(self, info, id, name):
-        genre = Genre.objects.get(pk=id)
-        genre.name = name
-        genre.save()
-        
-        return UpdateGenreMutatuin(genre=genre)
-    
+        try:
+            genre = Genre.objects.get(pk=id)
+            genre.name = name
+            genre.save()
+            return UpdateGenreMutatuin(genre=genre, message=f"Successfully updated genre with ID: {id}.")
+        except Genre.DoesNotExist:
+            return UpdateGenreMutatuin(message=f"Error: Genre with ID {id} does not exist.")
+       
 
 
 
