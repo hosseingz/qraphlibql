@@ -10,6 +10,13 @@ class AuthorType(DjangoObjectType):
         fields = ['id', 'first_name', 'last_name', 'date_of_birth', 'date_of_death']
 
 
+class GenreType(DjangoObjectType):
+    class Meta:
+        model = Genre
+        fields = ['id', 'name']
+
+
+# Author CRUD
 
 class CreateAuthorMutation(graphene.Mutation):
     class Arguments:
@@ -70,11 +77,56 @@ class UpdateAuthorMutation(graphene.Mutation):
         return UpdateAuthorMutation(author=author)
 
 
+# Genre CRUD
+
+class CreateGenreMutation(graphene.Mutation):
+    class Arguments:
+        name = graphene.String()
+    
+    genre = graphene.Field(GenreType)
+    
+    def mutate(self, info, name):
+        genre = Genre.objects.create(name=name)
+        
+        return CreateGenreMutation(genre=genre)
+
+
+class DeleteGenreMutation(graphene.Mutation):
+    class Arguments:
+        id = graphene.ID(required=True)
+
+    message = graphene.String()
+    
+    def mutate(self, info, id):
+        try:
+            genre = Genre.objects.get(pk=id)
+            genre.delete()
+            return DeleteGenreMutation(message=f"Successfully deleted genre with ID: {id}.")
+        except Genre.DoesNotExist:
+            return DeleteGenreMutation(message=f"Error: Genre with ID {id} does not exist.")
+
+
+class UpdateGenreMutatuin(graphene.Mutation):
+    class Arguments:
+        id = graphene.ID(required=True)
+        name = graphene.String(required=True)
+
+    genre = graphene.Field(GenreType)
+    
+    def mutate(self, info, id, name):
+        genre = Genre.objects.get(pk=id)
+        genre.name = name
+        genre.save()
+        
+        return UpdateGenreMutatuin(genre=genre)
+    
+
+
 
 class Query(graphene.ObjectType):
     authors = graphene.List(AuthorType)
     author = graphene.Field(AuthorType, id=graphene.ID())
-
+    
     def resolve_authors(self, info):
         return Author.objects.all()
     
@@ -82,9 +134,25 @@ class Query(graphene.ObjectType):
         return Author.objects.get(pk=id)
     
     
+    genres = graphene.List(GenreType)
+    genre = graphene.Field(GenreType, id=graphene.ID())
+    
+    def resolve_genres(self, info):
+        return Genre.objects.all()
+    
+    def resolve_genre(self, info, id):
+        return Genre.objects.get(pk=id)
+    
+    
 class Mutation(graphene.ObjectType):
     create_author = CreateAuthorMutation.Field()
     delete_author = DeleteAuthorMutation.Field()
     update_author = UpdateAuthorMutation.Field()
+    
+    create_genre = CreateGenreMutation.Field()
+    delete_genre = DeleteGenreMutation.Field()
+    update_genre = UpdateGenreMutatuin.Field()
+    
+    
     
 schema = graphene.Schema(query=Query, mutation=Mutation)
