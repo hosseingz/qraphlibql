@@ -7,19 +7,19 @@ from .models import *
 class AuthorType(DjangoObjectType):
     class Meta:
         model = Author
-        fields = ['id', 'first_name', 'last_name', 'date_of_birth', 'date_of_death']
+        fields = "__all__"
 
 
 class GenreType(DjangoObjectType):
     class Meta:
         model = Genre
-        fields = ['id', 'name']
+        fields = "__all__"
 
 
 class BookType(DjangoObjectType):
     class Meta:
         model = Book
-        fields = ['id', 'title', 'author', 'summary', 'genre', 'published_date', 'page_count']
+        fields = "__all__"
 
 
 
