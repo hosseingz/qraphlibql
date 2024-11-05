@@ -38,7 +38,6 @@ class Book(models.Model):
     genre = models.ManyToManyField(Genre)
     published_date = models.DateField(null=True, blank=True)
     page_count = models.PositiveIntegerField(null=True, blank=True)
-    cover_image = models.ImageField(upload_to='covers/', null=True, blank=True)
 
     def __str__(self):
         return f'{self.title} by {self.author}'
