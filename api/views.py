@@ -41,6 +41,7 @@ class UserLoginAPIView(APIView):
 
 class AuthorAPIView(APIView):
     authentication_classes = [BasicAuthentication]
+    
     def get_permissions(self):
         if self.request.method == 'GET':
             return [AllowAny()]
@@ -79,43 +80,46 @@ class AuthorAPIView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     
-    
-class GenreCreateAPIView(generics.CreateAPIView):
+class GenreAPIView(APIView):
     authentication_classes = [BasicAuthentication]
-    permission_classes = [AllowAny]
-    queryset = Genre.objects.all() 
-    serializer_class = GenreSerializer
     
-    
-class GenreUpdateAPIView(generics.UpdateAPIView):
-    authentication_classes = [BasicAuthentication]
-    permission_classes = [AllowAny]
-    queryset = Genre.objects.all()
-    serializer_class = GenreSerializer
-    lookup_field = 'id'
-   
-    
-class GenreDestroyAPIView(generics.DestroyAPIView):
-    authentication_classes = [BasicAuthentication]
-    permission_classes = [AllowAny]
-    queryset = Genre.objects.all()
-    serializer_class = GenreSerializer
-    lookup_field = 'id'
-    
-class GenresListAPIView(generics.ListAPIView):
-    authentication_classes = [BasicAuthentication]
-    permission_classes = [AllowAny]
-    queryset = Genre.objects.all()
-    serializer_class = GenreSerializer
-    
-    
-class GenreDetailByIdAPIView(generics.RetrieveAPIView):
-    authentication_classes = [BasicAuthentication]
-    permission_classes = [AllowAny]
-    queryset = Genre.objects.all()
-    serializer_class = GenreSerializer
-    lookup_field = 'id'
-    
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [AllowAny()]
+        return [IsAdminUser()]
+
+
+    def get(self, request, id=None, format=None):
+        if id:
+            genre = get_object_or_404(Genre, id=id)
+            serializer = GenreSerializer(genre)
+            return Response(serializer.data)
+        else:
+            genres = Genre.objects.all()
+            serializer = GenreSerializer(genres, many=True)
+            return Response(serializer.data)
+
+
+    def post(self, request, format=None):
+        serializer = GenreSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, id, format=None):
+        genre = get_object_or_404(Genre, id=id)
+        serializer = GenreSerializer(genre, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, id, format=None):
+        genre = get_object_or_404(Genre, id=id)
+        genre.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
     
 class BookCreateAPIView(APIView):
     authentication_classes = [BasicAuthentication]

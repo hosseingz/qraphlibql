@@ -18,12 +18,8 @@ urlpatterns = [
     path('authors/', views.AuthorAPIView.as_view(), name='authors'),
     path('authors/<int:id>/', views.AuthorAPIView.as_view(), name='author-detail'),
     
-    path('genres/create/', views.GenreCreateAPIView.as_view(), name='genre-create'),
-    path('genres/update/<int:id>/', views.GenreUpdateAPIView.as_view(), name='genre-update'),
-    path('genres/delete/<int:id>/', views.GenreDestroyAPIView.as_view(), name='genre-delete'),
-
-    path('genres/', views.GenresListAPIView.as_view(), name='genres-list'),
-    path('genres/<int:id>/', views.GenreDetailByIdAPIView.as_view(), name='genre-detail'),
+    path('genres/', views.GenreAPIView.as_view(), name='genres-list'),
+    path('genres/<int:id>/', views.GenreAPIView.as_view(), name='genre-detail'),
 
 
     path('books/create/', views.BookCreateAPIView.as_view(), name='book-create'),
