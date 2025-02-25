@@ -1,3 +1,4 @@
-django
-djangorestframework
-graphene-django
+Django==5.1.6
+djangorestframework==3.15.2
+ggraphene-django==3.2.2
+dotenv==0.9.9
