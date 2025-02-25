@@ -15,14 +15,8 @@ urlpatterns = [
     path('signup/', views.SignupAPIView.as_view(), name='signup'),
     path('login/', views.UserLoginAPIView.as_view(), name='login'),
     
-    
-    path('authors/create/', views.AuthorCreateAPIView.as_view(), name='author-create'),
-    path('authors/update/<int:id>/', views.AuthorUpdateAPIView.as_view(), name='author-update'),
-    path('authors/delete/<int:id>/', views.AuthorDestroyAPIView.as_view(), name='author-delete'),
-
-    path('authors/', views.AuthorsListAPIView.as_view(), name='authors-list'),
-    path('authors/<int:id>/', views.AuthorDetailByIdAPIView.as_view(), name='author-detail'),
-    
+    path('authors/', views.AuthorAPIView.as_view(), name='authors'),
+    path('authors/<int:id>/', views.AuthorAPIView.as_view(), name='author-detail'),
     
     path('genres/create/', views.GenreCreateAPIView.as_view(), name='genre-create'),
     path('genres/update/<int:id>/', views.GenreUpdateAPIView.as_view(), name='genre-update'),

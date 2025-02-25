@@ -1,11 +1,15 @@
 from rest_framework.authentication import BasicAuthentication
-from rest_framework import generics, status
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAdminUser
 from rest_framework.response import Response
-from .serializers import UserLoginSerializer  
+from rest_framework import generics, status
 from rest_framework.views import APIView
-from .serializers import *
+
 from django.contrib.auth import login
+from django.shortcuts import get_object_or_404
+
+from .serializers import UserLoginSerializer  
+from .serializers import *
+
 
 
 class SignupAPIView(generics.CreateAPIView):
@@ -34,43 +38,46 @@ class UserLoginAPIView(APIView):
 
 
 
-class AuthorCreateAPIView(generics.CreateAPIView):
+
+class AuthorAPIView(APIView):
     authentication_classes = [BasicAuthentication]
-    permission_classes = [AllowAny]
-    queryset = Author.objects.all()
-    serializer_class = AuthorSerializer
-    
-    
-class AuthorUpdateAPIView(generics.UpdateAPIView):
-    authentication_classes = [BasicAuthentication]
-    permission_classes = [AllowAny]
-    queryset = Author.objects.all()
-    serializer_class = AuthorSerializer
-    lookup_field = 'id'
-   
-    
-class AuthorDestroyAPIView(generics.DestroyAPIView):
-    authentication_classes = [BasicAuthentication]
-    permission_classes = [AllowAny]
-    queryset = Author.objects.all()
-    serializer_class = AuthorSerializer
-    lookup_field = 'id'
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [AllowAny()]
+        return [IsAdminUser()]
 
 
-class AuthorsListAPIView(generics.ListAPIView):
-    authentication_classes = [BasicAuthentication]
-    permission_classes = [AllowAny]
-    queryset = Author.objects.all()
-    serializer_class = AuthorSerializer
-    
-    
-class AuthorDetailByIdAPIView(generics.RetrieveAPIView):
-    authentication_classes = [BasicAuthentication]
-    permission_classes = [AllowAny]
-    queryset = Author.objects.all()
-    serializer_class = AuthorSerializer
-    lookup_field = 'id'
-    
+    def get(self, request, id=None, format=None):
+        if id:
+            author = get_object_or_404(Author, id=id)
+            serializer = AuthorSerializer(author)
+            return Response(serializer.data)
+        else:
+            authors = Author.objects.all()
+            serializer = AuthorSerializer(authors, many=True)
+            return Response(serializer.data)
+
+
+    def post(self, request, format=None):
+        serializer = AuthorSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, id, format=None):
+        author = get_object_or_404(Author, id=id)
+        serializer = AuthorSerializer(author, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, id, format=None):
+        author = get_object_or_404(Author, id=id)
+        author.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
     
     
 class GenreCreateAPIView(generics.CreateAPIView):
