@@ -36,18 +36,17 @@ class UserLoginSerializer(serializers.Serializer):
     username = serializers.CharField(required=True)
     password = serializers.CharField(required=True, write_only=True)
 
+
     def validate(self, attrs):
         username = attrs.get('username')
         password = attrs.get('password')
 
         user = authenticate(username=username, password=password)
-        if user is None:
-            raise AuthenticationFailed("Invalid username or password.")
-        
-        return {
-            'user': user,
-            'message': 'Login successful!',
-        }
+        if user:
+            return user
+        raise serializers.ValidationError('Invalid credentials')
+
+
 
 
 
