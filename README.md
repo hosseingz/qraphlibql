@@ -249,26 +249,367 @@ mutation {
 
 The REST API endpoints are structured in a way that reflects the resources. Here are some key endpoints:
 
-- **Authors**
-   - `POST /api/authors/create/`: Create a new author.
-   - `GET /api/authors/`: List all authors.
-   - `GET /api/authors/<id>/`: Retrieve an author by ID.
-   - `PUT /api/authors/update/<id>/`: Update an author by ID.
-   - `DELETE /api/authors/delete/<id>/`: Delete an author by ID.
 
-- **Genres**
-   - `POST /api/genres/create/`: Create a new genre.
-   - `GET /api/genres/`: List all genres.
-   - `GET /api/genres/<id>/`: Retrieve a genre by ID.
-   - `PUT /api/genres/update/<id>/`: Update a genre by ID.
-   - `DELETE /api/genres/delete/<id>/`: Delete a genre by ID.
 
-- **Books**
-   - `POST /api/books/create/`: Create a new book.
-   - `GET /api/books/`: List all books.
-   - `GET /api/books/<id>/`: Retrieve a book by ID.
-   - `PUT /api/books/update/<id>/`: Update a book by ID.
-   - `DELETE /api/books/delete/<id>/`: Delete a book by ID.
+
+### `Authentication`
+
+#### **User Registration**
+- **POST** `/api/signup/`
+  - Registers a new user.
+  - **Request body**:
+    ```json
+    {
+      "username": "john_doe",
+      "email": "john.doe@example.com",
+      "first_name": "John",
+      "last_name": "Doe",
+      "password": "password123"
+    }
+    ```
+  - **Response**:
+    ```json
+    {
+      "username": "john_doe",
+      "message": "User successfully created!"
+    }
+    ```
+
+#### **User Login**
+- **POST** `/api/login/`
+  - Authenticates a user and returns a success message.
+  - **Request body**:
+    ```json
+    {
+      "username": "john_doe",
+      "password": "password123"
+    }
+    ```
+  - **Response**:
+    ```json
+    {
+      "username": "john_doe",
+      "message": "Login successful!"
+    }
+    ```
+
+### `Authors`
+
+#### **List All Authors**
+- **GET** `/api/authors/`
+  - Retrieves a list of all authors.
+  - **Response**:
+    ```json
+    [
+      {
+        "id": 1,
+        "first_name": "John",
+        "last_name": "Doe",
+        "date_of_birth": "1980-01-01",
+        "date_of_death": null
+      },
+      {
+        "id": 2,
+        "first_name": "Jane",
+        "last_name": "Smith",
+        "date_of_birth": "1990-05-15",
+        "date_of_death": null
+      }
+    ]
+    ```
+
+#### **Create a New Author**
+- **POST** `/api/authors/`
+  - Creates a new author.
+  - **Request body**:
+    ```json
+    {
+      "first_name": "George",
+      "last_name": "Orwell",
+      "date_of_birth": "1903-06-25",
+      "date_of_death": "1950-01-21"
+    }
+    ```
+  - **Response**:
+    ```json
+    {
+      "id": 3,
+      "first_name": "George",
+      "last_name": "Orwell",
+      "date_of_birth": "1903-06-25",
+      "date_of_death": "1950-01-21"
+    }
+    ```
+
+#### **Retrieve an Author by ID**
+- **GET** `/api/authors/<id>/`
+  - Retrieves an author by their ID.
+  - **Example**: `/api/authors/1/`
+  - **Response**:
+    ```json
+    {
+      "id": 1,
+      "first_name": "John",
+      "last_name": "Doe",
+      "date_of_birth": "1980-01-01",
+      "date_of_death": null
+    }
+    ```
+
+#### **Update an Author**
+- **PUT** `/api/authors/<id>/`
+  - Updates an author's information.
+  - **Request body**:
+    ```json
+    {
+      "first_name": "Johnathan",
+      "last_name": "Doe",
+      "date_of_birth": "1980-01-01",
+      "date_of_death": null
+    }
+    ```
+  - **Response**:
+    ```json
+    {
+      "id": 1,
+      "first_name": "Johnathan",
+      "last_name": "Doe",
+      "date_of_birth": "1980-01-01",
+      "date_of_death": null
+    }
+    ```
+
+#### **Delete an Author**
+- **DELETE** `/api/authors/<id>/`
+  - Deletes an author by their ID.
+  - **Example**: `/api/authors/1/`
+  - **Response**:
+    - Status: 204 No Content
+
+---
+
+### `Genres`
+
+#### **List All Genres**
+- **GET** `/api/genres/`
+  - Retrieves a list of all genres.
+  - **Response**:
+    ```json
+    [
+      {
+        "id": 1,
+        "name": "Fiction"
+      },
+      {
+        "id": 2,
+        "name": "Non-fiction"
+      }
+    ]
+    ```
+
+#### **Create a New Genre**
+- **POST** `/api/genres/`
+  - Creates a new genre.
+  - **Request body**:
+    ```json
+    {
+      "name": "Science Fiction"
+    }
+    ```
+  - **Response**:
+    ```json
+    {
+      "id": 3,
+      "name": "Science Fiction"
+    }
+    ```
+
+#### **Retrieve a Genre by ID**
+- **GET** `/api/genres/<id>/`
+  - Retrieves a genre by its ID.
+  - **Example**: `/api/genres/1/`
+  - **Response**:
+    ```json
+    {
+      "id": 1,
+      "name": "Fiction"
+    }
+    ```
+
+#### **Update a Genre**
+- **PUT** `/api/genres/<id>/`
+  - Updates a genre by its ID.
+  - **Request body**:
+    ```json
+    {
+      "name": "Fantasy"
+    }
+    ```
+  - **Response**:
+    ```json
+    {
+      "id": 1,
+      "name": "Fantasy"
+    }
+    ```
+
+#### **Delete a Genre**
+- **DELETE** `/api/genres/<id>/`
+  - Deletes a genre by its ID.
+  - **Example**: `/api/genres/1/`
+  - **Response**:
+    - Status: 204 No Content
+
+---
+
+### `Books`
+
+#### **List All Books**
+- **GET** `/api/books/`
+  - Retrieves a list of all books.
+  - **Response**:
+    ```json
+    [
+      {
+        "id": 1,
+        "title": "1984",
+        "author": {
+          "id": 1,
+          "first_name": "George",
+          "last_name": "Orwell"
+        },
+        "summary": "A dystopian novel about totalitarianism.",
+        "genre": [
+          {
+            "id": 1,
+            "name": "Fiction"
+          }
+        ],
+        "published_date": "1949-06-08",
+        "page_count": 328
+      }
+    ]
+    ```
+
+#### **Create a New Book**
+- **POST** `/api/books/`
+  - Creates a new book.
+  - **Request body**:
+    ```json
+    {
+      "title": "1984",
+      "author": {
+        "first_name": "George",
+        "last_name": "Orwell"
+      },
+      "summary": "A dystopian novel about totalitarianism.",
+      "genre": [
+        {
+          "name": "Fiction"
+        }
+      ],
+      "published_date": "1949-06-08",
+      "page_count": 328
+    }
+    ```
+  - **Response**:
+    ```json
+    {
+      "id": 1,
+      "title": "1984",
+      "author": {
+        "id": 1,
+        "first_name": "George",
+        "last_name": "Orwell"
+      },
+      "summary": "A dystopian novel about totalitarianism.",
+      "genre": [
+        {
+          "id": 1,
+          "name": "Fiction"
+        }
+      ],
+      "published_date": "1949-06-08",
+      "page_count": 328
+    }
+    ```
+
+#### **Retrieve a Book by ID**
+- **GET** `/api/books/<id>/`
+  - Retrieves a book by its ID.
+  - **Example**: `/api/books/1/`
+  - **Response**:
+    ```json
+    {
+      "id": 1,
+      "title": "1984",
+      "author": {
+        "id": 1,
+        "first_name": "George",
+        "last_name": "Orwell"
+      },
+      "summary": "A dystopian novel about totalitarianism.",
+      "genre": [
+        {
+          "id": 1,
+          "name": "Fiction"
+        }
+      ],
+      "published_date": "1949-06-08",
+      "page_count": 328
+    }
+    ```
+
+#### **Update a Book**
+- **PUT** `/api/books/<id>/`
+  - Updates a book's information by its ID.
+  - **Request body**:
+    ```json
+    {
+      "title": "1984",
+      "author": {
+        "id": 1,
+        "first_name": "George",
+        "last_name": "Orwell"
+      },
+      "summary": "A dystopian novel about totalitarianism.",
+      "genre": [
+        {
+          "id": 1,
+          "name": "Fiction"
+        }
+      ],
+      "published_date": "1949-06-08",
+      "page_count": 328
+    }
+    ```
+  - **Response**:
+    ```json
+    {
+      "title": "1984 (Updated)",
+      "author": {
+        "id": 1,
+        "first_name": "George",
+        "last_name": "Orwell"
+      },
+      "summary": "A dystopian novel about totalitarianism.",
+      "genre": [
+        {
+          "id": 1,
+          "name": "Fiction"
+        }
+      ],
+      "published_date": "1949-06-08",
+      "page_count": 328
+    }
+    ```
+
+#### **Delete a Book**
+- **DELETE** `/api/books/<id>/`
+  - Deletes a book by its ID.
+  - **Example**: `/api/books/1/`
+  - **Response**:
+    - Status: 204 No Content
 
 
 ## Error Handling
