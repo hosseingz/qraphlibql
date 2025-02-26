@@ -18,16 +18,11 @@ urlpatterns = [
     path('authors/', views.AuthorAPIView.as_view(), name='authors'),
     path('authors/<int:id>/', views.AuthorAPIView.as_view(), name='author-detail'),
     
-    path('genres/', views.GenreAPIView.as_view(), name='genres-list'),
+    path('genres/', views.GenreAPIView.as_view(), name='genres'),
     path('genres/<int:id>/', views.GenreAPIView.as_view(), name='genre-detail'),
 
-
-    path('books/create/', views.BookCreateAPIView.as_view(), name='book-create'),
-    path('books/update/<int:id>/', views.BookUpdateAPIView.as_view(), name='book-update'),
-    path('books/delete/<int:id>/', views.BookDestroyAPIView.as_view(), name='book-delete'),
-
-    path('books/', views.BooksListAPIView.as_view(), name='books-list'),
-    path('books/<int:id>/', views.BookDetailByIdAPIView.as_view(), name='book-detail'),
+    path('books/', views.BookAPIView.as_view(), name='books'),
+    path('books/<int:id>/', views.BookAPIView.as_view(), name='book-detail'),
 
 ]
 

@@ -88,7 +88,6 @@ class GenreAPIView(APIView):
             return [AllowAny()]
         return [IsAdminUser()]
 
-
     def get(self, request, id=None, format=None):
         if id:
             genre = get_object_or_404(Genre, id=id)
@@ -98,7 +97,6 @@ class GenreAPIView(APIView):
             genres = Genre.objects.all()
             serializer = GenreSerializer(genres, many=True)
             return Response(serializer.data)
-
 
     def post(self, request, format=None):
         serializer = GenreSerializer(data=request.data)
@@ -121,74 +119,43 @@ class GenreAPIView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     
-class BookCreateAPIView(APIView):
+class BookAPIView(APIView):
     authentication_classes = [BasicAuthentication]
-    permission_classes = [AllowAny]
+    
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [AllowAny()]
+        return [IsAdminUser()]
 
-    def post(self, request, *args, **kwargs):
+    def get(self, request, id=None, format=None):
+        if id:
+            book = get_object_or_404(Book, id=id)
+            serializer = BookSerializer(book)
+            return Response(serializer.data)
+        else:
+            books = Book.objects.all()
+            serializer = BookSerializer(books, many=True)
+            return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = BookSerializer(data=request.data)
         
-        author_data = request.data.pop('author')
-        genres_data = request.data.pop('genre')
-
-        author, _ = Author.objects.get_or_create(**author_data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         
-        book = Book.objects.create(author=author, **request.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, id, format=None):
+        book = get_object_or_404(Book, id=id)
+        serializer = BookSerializer(book, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, id, format=None):
+        book = get_object_or_404(Book, id=id)
+        book.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
         
-        for data in genres_data:
-            genre, _ = Genre.objects.get_or_create(**data)
-            book.genre.add(genre)
-
-        return Response(BookSerializer(book).data, status=status.HTTP_200_OK)
-    
-    
-    
-class BookUpdateAPIView(APIView):
-    authentication_classes = [BasicAuthentication]
-    permission_classes = [AllowAny]
-
-    def put(self, request, *args, **kwargs):
-        book_id = kwargs.get('id')
-        book = Book.objects.get(id=book_id)
-
-       
-        author_data = request.data.pop('author', None)
-        if author_data:
-            author, _ = Author.objects.get_or_create(**author_data)
-            book.author = author
-        
-        
-        genres_data = request.data.pop('genre', [])
-        book.genre.clear() 
-        for data in genres_data:
-            genre, _ = Genre.objects.get_or_create(**data)
-            book.genre.add(genre)
-
-
-        for attr, value in request.data.items():
-            setattr(book, attr, value)
-            
-        book.save()
-
-        return Response(BookSerializer(book).data, status=status.HTTP_200_OK)
-    
-    
-class BookDestroyAPIView(generics.DestroyAPIView):
-    authentication_classes = [BasicAuthentication]
-    permission_classes = [AllowAny]
-    queryset = Book.objects.all()
-    serializer_class = BookSerializer
-    lookup_field = 'id'
-    
-class BooksListAPIView(generics.ListAPIView):
-    authentication_classes = [BasicAuthentication]
-    permission_classes = [AllowAny]
-    queryset = Book.objects.all()
-    serializer_class = BookSerializer
-    
-    
-class BookDetailByIdAPIView(generics.RetrieveAPIView):
-    authentication_classes = [BasicAuthentication]
-    permission_classes = [AllowAny]
-    queryset = Book.objects.all()
-    serializer_class = BookSerializer
-    lookup_field = 'id'
