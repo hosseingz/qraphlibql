@@ -19,7 +19,7 @@ This document provides an overview of how to use GraphQL queries and REST APIs i
 ## Prerequisites
 1. Python 3.x installed on your machine.
 2. A virtual environment (recommended).
-3. Django and Graphene-Django installed in your environment.
+
 
 ## Setting Up the Project
 1. **Clone the repository**:
@@ -40,12 +40,38 @@ This document provides an overview of how to use GraphQL queries and REST APIs i
    pip install -r requirements.txt
    ```
 
-4. **Run migrations** (if necessary):
+
+4. **Create the `.env` file:**
+
+   In the root directory of your Django project (where `manage.py` is located), create a new file called `.env`. This file will hold all your environment variables.
+
+5. **Add the following variables to `.env`:**
+
+   Below is an example of the required environment variables for your Django project. You can copy and modify them based on your project setup.
+
+   ```ini
+   # .env
+
+   SECRET_KEY=your-secret-key-here
+   DEBUG=True
+   ```
+
+   - `SECRET_KEY`: This is a sensitive key used by Django for cryptographic signing. Make sure it is kept secret and unique for your environment.
+   - `DEBUG`: Set to `True` for development and `False` for production.
+
+   > **Important:** Never commit your `.env` file to version control (e.g., Git). Add it to your `.gitignore` file to ensure it stays private:
+   ```
+   .env
+   ```
+
+
+
+6. **Run migrations** (if necessary):
    ```bash
    python manage.py migrate
    ```
 
-5. **Run the server**:
+7. **Run the server**:
    ```bash
    python manage.py runserver
    ```
