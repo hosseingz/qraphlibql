@@ -9,7 +9,7 @@ from django.shortcuts import get_object_or_404
 
 from .serializers import UserLoginSerializer  
 from .serializers import *
-
+from .permissions import IsAdminOrAllowAny
 
 
 class SignupAPIView(generics.CreateAPIView):
@@ -41,11 +41,7 @@ class UserLoginAPIView(APIView):
 
 class AuthorAPIView(APIView):
     authentication_classes = [BasicAuthentication]
-    
-    def get_permissions(self):
-        if self.request.method == 'GET':
-            return [AllowAny()]
-        return [IsAdminUser()]
+    permission_classes = [IsAdminOrAllowAny]
 
 
     def get(self, request, id=None, format=None):
@@ -82,11 +78,7 @@ class AuthorAPIView(APIView):
     
 class GenreAPIView(APIView):
     authentication_classes = [BasicAuthentication]
-    
-    def get_permissions(self):
-        if self.request.method == 'GET':
-            return [AllowAny()]
-        return [IsAdminUser()]
+    permission_classes = [IsAdminOrAllowAny]
 
     def get(self, request, id=None, format=None):
         if id:
@@ -121,11 +113,7 @@ class GenreAPIView(APIView):
     
 class BookAPIView(APIView):
     authentication_classes = [BasicAuthentication]
-    
-    def get_permissions(self):
-        if self.request.method == 'GET':
-            return [AllowAny()]
-        return [IsAdminUser()]
+    permission_classes = [IsAdminOrAllowAny]
 
     def get(self, request, id=None, format=None):
         if id:
